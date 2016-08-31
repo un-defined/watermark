@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+
+<body>
+<script type="text/javascript" src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script>
+
+/**
+ * 在 jQuery 实例上扩展加水印插件，记住把要添加水印的元素样式加上 "background-repeat: repeat";
+ * @param {String} id   需要画水印的元素 id
+ * @param {Object} args   水印相关参数
+ *    cWidth  : 画布宽高
+ *    font    : 字体样式
+ *    color   : 字体颜色
+ *    text    : 水印文字
+ */
+;(function($, window){
+
+  var document = window.document;
+
+  $.fn.paintWatermark = function(args){
+    var c = document.createElement('canvas');
+    var bodyEl = document.body;
+    var ctx;
+
+    if (!c.getContext) {
+      console.log('你的破浏览器不支持canvas， 赶紧换一个！');
+      return false;
+    }
+
+    // 动态添加不可见canvas到body上
+    c.width = args.cWidth || 200;
+    c.height = c.width;
+    bodyEl.appendChild(c);
+
+    ctx = c.getContext('2d');
+    ctx.rotate( -45*Math.PI/180 );
+    ctx.font = args.font || '20px Microsoft Yahei';
+    ctx.fillStyle = args.color || "lightgray";
+
+    var offsetX = -c.width/2;
+    var offsetY = c.width/(2*Math.sqrt(2));
+    var text = args.text || '水印文字';
+
+    ctx.fillText( text,  offsetX + 60, offsetY );
+    ctx.fillText( text,  offsetX - 60, 2*offsetY );
+    ctx.fillText( text,  offsetX + 60, 3*offsetY );
+    this.css('background-image', 'url("' + ctx.canvas.toDataURL() + '")');
+
+    // 将canvas移除
+    bodyEl.removeChild(c);
+  }
+
+})($, window);
+
+
+
+
+
+
+$('body').paintWatermark({
+  cWidth: 300,
+  text: 'Test-Watermark    Test-Watermark  Test-Watermark'
+});
+
+
+</script>
+</body>
+</html>

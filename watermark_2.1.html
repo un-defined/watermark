@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<style type="text/css">
+		.container {
+			margin-left: 300px;
+			margin-top: 300px;
+			width: 800px;
+			height: 500px;
+			border: 1px solid black;
+
+			/*实际使用时，以下俩属性必须设置*/
+			position: relative;
+			overflow: hidden;
+		}
+	</style>
+</head>
+<body>
+	<div class="container"></div>
+
+
+	<script type="text/javascript">
+		
+		;(function(){
+
+			$.fn.setWaterMark = function(options){
+
+				var settings = $.extend(true, {
+					prefix: 'Watermark',
+					suffixName: 'Admin',
+					spaceCount: 4,
+					colCount: 20,
+					rowCount: 20,
+					style: {
+						'position': 'absolute',
+						'line-height': '80px',
+						'transform': 'rotate(-45deg)',
+						'-ms-transform': 'rotate(-45deg)', 		/* IE 9 */
+						'-moz-transform': 'rotate(-45deg)', 	/* Firefox */
+						'-webkit-transform': 'rotate(-45deg)', 	/* Safari 和 Chrome */
+						'-o-transform': 'rotate(-45deg)', 		/* Opera */
+						'transform-origin': '0% 0%',
+						'-ms-transform-origin': '0% 0%',
+						'-moz-transform-origin': '0% 0%',
+						'-webkit-transform-origin': '0% 0%',
+						'-o-transform-origin': '0% 0%',
+						'border': '1px solid pink',
+						'z-index': '-1',
+						'overflow': 'hidden',
+						'white-space': 'pre'
+					},
+				}, options);
+				
+
+				var _this = this;
+				var SQRT_2 = Math.sqrt(2);
+
+				var w = _this.width(),
+					h = _this.height(),
+					L = (h + w)/SQRT_2,
+					html = [];
+
+				var $bgEl = $('<div>');
+
+				var spaceStr = [];
+				var singleMark = '';
+
+				for (var i = 0; i < settings.spaceCount; i++) {
+					spaceStr.push('&nbsp;');
+				}
+
+				spaceStr = spaceStr.join('');
+				singleMark = settings.prefix + ' - ' + settings.suffixName + spaceStr;
+
+
+				for (var i = 0; i < Math.ceil( settings.rowCount/2 ); i++) {
+					
+					var singleLine = [];
+						singleLineStr = '';
+
+					for (var j = 0; j < settings.colCount; j++) {
+						
+						singleLine.push( singleMark );
+
+					}
+
+					singleLineStr = singleLine.join('');
+
+					html.push( singleLineStr + '<br />' + settings.suffixName + spaceStr + singleLineStr + '<br />' );
+
+				}
+
+				$bgEl.css( $.extend( settings.style, {
+					'width': L + 'px',
+					'height': L + 'px',
+					'left': -h/2 + 'px',
+					'top': h/2 + 'px'
+				}) );
+
+				$bgEl.html( html.join('') ).appendTo( _this );
+
+			}
+
+		})(jQuery);
+
+
+
+
+
+
+		$('.container').setWaterMark({
+			prefix: 'Test',
+			suffixName: 'Suffix',												// 後綴名
+			spaceCount: 2,														// 空格個數
+			colCount: 20,														// 一行的水印個數
+			rowCount: 20,														// 水印的行數
+			style: {															// 自定義水印文字樣式
+				'color': 'red',
+				'font-size': '20px'
+			}
+		});
+
+	</script>
+</body>
+</html>
