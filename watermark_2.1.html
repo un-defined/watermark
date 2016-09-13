@@ -14,7 +14,20 @@
 
 			/*实际使用时，以下俩属性必须设置*/
 			position: relative;
+			/* overflow: hidden; */
+		}
+		.watermark {
+			position: absolute;
+			line-height: 80px;
+			transform: rotate(-45deg);
+			-ms-transform: rotate(-45deg); 			/* IE 9 */
+			-moz-transform: rotate(-45deg); 		/* Firefox */
+			-webkit-transform: rotate(-45deg); 		/* Safari 和 Chrome */
+			-o-transform: rotate(-45deg); 			/* Opera */
+			border: 1px solid pink;
+			z-index: -1;
 			overflow: hidden;
+			white-space: pre;
 		}
 	</style>
 </head>
@@ -28,45 +41,27 @@
 
 			$.fn.setWaterMark = function(options){
 
-				var settings = $.extend(true, {
-					prefix: 'Watermark',
-					suffixName: 'Admin',
-					spaceCount: 4,
-					colCount: 20,
-					rowCount: 20,
-					style: {
-						'position': 'absolute',
-						'line-height': '80px',
-						'transform': 'rotate(-45deg)',
-						'-ms-transform': 'rotate(-45deg)', 		/* IE 9 */
-						'-moz-transform': 'rotate(-45deg)', 	/* Firefox */
-						'-webkit-transform': 'rotate(-45deg)', 	/* Safari 和 Chrome */
-						'-o-transform': 'rotate(-45deg)', 		/* Opera */
-						'transform-origin': '0% 0%',
-						'-ms-transform-origin': '0% 0%',
-						'-moz-transform-origin': '0% 0%',
-						'-webkit-transform-origin': '0% 0%',
-						'-o-transform-origin': '0% 0%',
-						'border': '1px solid pink',
-						'z-index': '-1',
-						'overflow': 'hidden',
-						'white-space': 'pre'
-					},
-				}, options);
-				
-
 				var _this = this;
-				var SQRT_2 = Math.sqrt(2);
+				var settings = $.extend(true, {
+						prefix: 'Watermark',
+						suffixName: 'Admin',
+						spaceCount: 4,
+						colCount: 20,
+						rowCount: 20,
+						style: {},
+					}, options);
+				
+				var SQRT_2 = Math.sqrt(2),
 
-				var w = _this.width(),
+					w = _this.width(),
 					h = _this.height(),
 					L = (h + w)/SQRT_2,
 					html = [];
 
-				var $bgEl = $('<div>');
+				var $bgEl = $('<div>', {class: 'watermark'});
 
-				var spaceStr = [];
-				var singleMark = '';
+				var spaceStr = [],
+					singleMark = '';
 
 				for (var i = 0; i < settings.spaceCount; i++) {
 					spaceStr.push('&nbsp;');
@@ -78,7 +73,7 @@
 
 				for (var i = 0; i < Math.ceil( settings.rowCount/2 ); i++) {
 					
-					var singleLine = [];
+					var singleLine = [],
 						singleLineStr = '';
 
 					for (var j = 0; j < settings.colCount; j++) {
@@ -96,8 +91,13 @@
 				$bgEl.css( $.extend( settings.style, {
 					'width': L + 'px',
 					'height': L + 'px',
-					'left': -h/2 + 'px',
-					'top': h/2 + 'px'
+					'left': -(L-w)/2 + 'px',
+					'top': -(L-h)/2 + 'px',
+					'transform-origin': '50% 50%',			
+					'-ms-transform-origin': '50% 50%',			/* IE 9 */
+					'-moz-transform-origin': '50% 50%',			/* Firefox */
+					'-webkit-transform-origin': '50% 50%',		/* Safari 和 Chrome */
+					'-o-transform-origin': '50% 50%',			/* Opera */
 				}) );
 
 				$bgEl.html( html.join('') ).appendTo( _this );
